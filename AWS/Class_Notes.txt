@@ -593,6 +593,82 @@ Next:::
 		- ebs
 			
 				
-					
+
+
+	
+				
+######################
+Day 6: 9th Dec. 2025
+######################		
+	
+	AWS Storage Services:
+	
+		- AWS S3 
+		
+		
+			S3:
+				bkt1 						BktName
+					index.html 				Object Name 
+
+			S3:
+				bkt1 						BktName
+					WeB_Project_WS
+						Web_Resources				Prefix 
+							index.html 				Object Name 
+							*.js					Object Name
+							*.css					Object Name
+							Images 
+								img1.jpeg			Object Name
+								img2.jpeg			Object Name
+						SRC_Resources				Prefix 
+							*.py 					Object Name				
+		
+		- ebs
+		
+		
+		- S3 --> 1 GB data -==> process 
+		
+		
+		https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html?icmpid=docs_amazons3_console
+
+
+https://pl-aws-loksaibkt1.s3.ap-south-1.amazonaws.com/index.html
+
+
+		
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Statement1",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::pl-aws-loksaibkt1/*"
+        }
+    ]
+}	
+
+https://pl-aws-loksaibkt1.s3.ap-south-1.amazonaws.com/index.html
+
+
+
+Source_Code Management  -> github/S3	
+
+Build & Create Artifacts ==> *.war/*.jar/*.exec/*.dll
+
+Upload artifacts to S3 Bucket	
+
+Deploy the latest version of ARtifacts from S3 Bucket to Target Environment 
+
+
+
+
+- AWS EBS Volumes :::::
+	
+	- To Store Database ==> (SQL/No-SQL) 
+
+				
 				
 			
