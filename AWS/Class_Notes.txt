@@ -383,3 +383,347 @@ Day 3: 4th Dec. 2025
 		
 	IAM Role: plec2-s3-role1
 	
+
+			
+######################
+Day 4: 5th Dec. 2025
+######################	
+
+	Elastic Compute Cloud Service ::::
+	
+	Virtual Machine :::
+	
+	
+	AWS Cloud Service :
+	
+		Computing Device!
+	
+
+	
+	
+	root: 
+	
+	
+	users - group1 ==> app_Team1
+	
+	users - group2 ==> test_Team1
+	
+	
+	Launch EC2 Instance :
+	
+	Linux Machine - Ubuntu 
+	
+	Operating System :
+	
+	
+		Setup the DevOps Tools : 
+			- Linux OS 
+			
+			- Windows OS 
+			
+			- Mac OS 
+			
+			
+		DevOps Tools:
+		
+		Testing :
+		
+		Production Environments :
+		
+		CPU - 
+		
+		RAM -
+		
+		WAS - Nginx/Tomcat
+		
+		DBase Server - Oracle/MySQL
+		
+		External Storage for Applications 
+		
+		
+		
+	
+		1 VM ==> 750 Hrs/Month 
+		
+		10 VMs ==> 75 Hrs/Month 
+		
+		Monitor the Resource usages :::
+		
+		Billing Dashboard :::
+		
+		
+	Billing Management ::::
+
+	Web Servers: Tomcat - 8080 / Nginx - 80 
+	
+	Lvl 1 - Demo on EC2 Instances :::
+	
+	
+	To Launch EC2 Instances :
+	
+		- AWS Console 
+		
+		- AWS Cli 
+		
+		- IAC Tools - CloudFormation/Terraform 
+		
+		- AWS SDK
+	
+	1. Launch using AWS Console :
+	
+		- Connect to EC2 Instance 
+		
+			- Connection Parameters :
+			
+				- Host Name 		--> Public IP Address (Linux Machine)
+				
+				- Port 				--> 22
+				
+				- User Name 		--> ubuntu
+				
+				- User Credentials 	--> 	- Key Based Authentication
+				
+						- Public Key 
+						- Private Key 
+						
+			
+			- How to Connect to the Remote Servers :
+			
+				- EC2 Instance connect Option - using Web Browser 
+				
+				- SSH Agents : (Local Windows Users install)
+					
+					- Putty /
+					
+					- MobaXterm  						# https://mobaxterm.mobatek.net/download-home-edition.html
+														# Download Installer Edition 
+														# Go to Downloads Folder 
+														# Right Click & Extract 
+														# *.exe 
+					
+				- Terminals :	(Local Linux / Mac Users)
+				
+				
+				
+					
+######################
+Day 5: 8th Dec. 2025
+######################				
+				
+				
+	- EC2 Service
+	
+		- VM --> 
+		
+			Dev,Test,Prod 
+			
+		Environments :
+		
+			Non-Prod Environments							Production Environments
+			
+			
+				- Dev Environment
+				
+				- Test Environments 
+					
+					QA 
+					
+					UAT 				================>	Prod Servers1,2,3,4,5 
+					
+				
+	- EC2 Instance/VM == Highly Available, Highly Scalable, Reliable
+	
+	
+	- User Data ::::
+	
+		- To enable start-up task or script!
+		
+		
+		
+		
+		
+		- Infra-Structure Provisioning 	
+		
+		- Infra-Structure Configurations 
+		
+		
+		
+#!/bin/bash
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+echo "<h1>Hello! You accessing web server - $(hostname -f)</h1>" > /var/www/html/index.html	
+
+
+	Linux Distributions : Package Manager !
+	
+		- Debian/Ubuntu 	==> apt / apt-get 
+		
+		- Centos/RHEL		==> yum  
+		
+		- Fedora 			==> yum / dnf(Latest version)
+		
+		
+	IAC Tools to Configure the Below Services :::
+		
+		Jenkins Server 	-> Default  Port : 8080   VM _ 
+		
+		Nginx Server 	-> Default Port : 80 
+		
+		Tomcat 			-> Default Port : 8080
+		
+		
+		TO automate : CloudFormation/Terraform 
+	
+	AMI :::
+	
+	
+	Create an AMI and use it to Launch any VM.  - server template 
+	
+	Docker - is used create Container Images --> - 
+	
+	
+Next:::
+
+	AWS Storage Services:
+	
+		- s3 
+		
+		- ebs
+			
+				
+
+
+	
+				
+######################
+Day 6: 9th Dec. 2025
+######################		
+	
+	AWS Storage Services:
+	
+		- AWS S3 
+		
+		
+			S3:
+				bkt1 						BktName
+					index.html 				Object Name 
+
+			S3:
+				bkt1 						BktName
+					WeB_Project_WS
+						Web_Resources				Prefix 
+							index.html 				Object Name 
+							*.js					Object Name
+							*.css					Object Name
+							Images 
+								img1.jpeg			Object Name
+								img2.jpeg			Object Name
+						SRC_Resources				Prefix 
+							*.py 					Object Name				
+		
+		- ebs
+		
+		
+		- S3 --> 1 GB data -==> process 
+		
+		
+		https://docs.aws.amazon.com/AmazonS3/latest/userguide/example-bucket-policies.html?icmpid=docs_amazons3_console
+
+
+https://pl-aws-loksaibkt1.s3.ap-south-1.amazonaws.com/index.html
+
+
+		
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Statement1",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::pl-aws-loksaibkt1/*"
+        }
+    ]
+}	
+
+https://pl-aws-loksaibkt1.s3.ap-south-1.amazonaws.com/index.html
+
+
+
+Source_Code Management  -> github/S3	
+
+Build & Create Artifacts ==> *.war/*.jar/*.exec/*.dll
+
+Upload artifacts to S3 Bucket	
+
+Deploy the latest version of ARtifacts from S3 Bucket to Target Environment 
+
+
+
+
+- AWS EBS Volumes :::::
+	
+	- To Store Database ==> (SQL/No-SQL) 
+
+				
+
+
+######################
+Day 7: 11th Dec. 2025
+######################	
+
+	- AWS Network Services :::: *********
+	
+		Deploy: 3 - Tier Web Application :
+			
+				Front-End Layer 	-> User Interface 
+				
+				Application Layer 	-> Business Logics 
+				
+				Backend Layer		-> Database 
+	
+######################
+Day 8: 12th Dec. 2025
+######################	
+
+	Working with AWS VPC and Public & Private Subnets :::
+	
+	VPC ::: PL_AWS_VPC_A
+	
+	IGW ::: PL_AWS_VPC_A-IGW
+	
+	Public_Subnet ::: PL_AWS_VPC_A-Public
+	
+	
+
+	
+	Route_Table_Public_Subnet ::: RT_PL_AWS_VPC_A-Public
+	
+
+	
+	EC2_Instance : PL_AWS_WAS
+	
+#!/bin/bash
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+echo "<h1>Hello! You accessing web server - $(hostname -f)</h1>" > /var/www/html/index.html	
+
+
+	Private Subnet :::
+
+	#Private_Subnet ::: PL_AWS_VPC_A-Private
+	
+	#Route_Table_Private_Subnet ::: RT_PL_AWS_VPC_A-Private	
+	
+Next :::
+
+	AWS VPC Connectivity Options :::::
+	
+				
+			
