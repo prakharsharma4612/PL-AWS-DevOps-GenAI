@@ -725,5 +725,122 @@ Next :::
 
 	AWS VPC Connectivity Options :::::
 	
-				
+
+
+	
+######################
+Day 9: 15th Dec. 2025
+######################
+
+	AWS VPC Connectivity Options :::::
+	
+	
+	Other AWS Services : AWS Cli, SNS/SQS
+	
+	AWS Security - Security Group & NACL, Encryption Protocols / Keys 
+	
+	High Availability & Load Balancing 
+
+
+######################
+Day 10: 16th Dec. 2025
+######################
+
+
+	High Availability & Load Balancing ::::
+	
+	
+	Environments :::
+	
+	Non-Prod				 Production Environment
+	
+	Dev 			
+	Test
+		QA 
+		UAT 	=========>		Prod_Servers
+		
+	Route-52 => 100%
+	
+	https://uptime.is/
+	
+	99.9 %
+	99.999 %
+	
+	
+	www.amazon.com ->   100+++ Servers 
+	
+	
+	
+	Health Checker ! -- subset of aws cloud watch service!
+	
+		CPU/Memory/Network Traffic
+		
+		
+	How LB can Distribute the Load ???
+	
+	Target Group used by Load Balancer 
+	
+	Best practise, reduce the no. of Load Balancers!
+	
+	Set the Load Balancer at the Application Level!
+	
+	Application (vs) Micro-Services 
+	
+	
+	Application : www.amazon.com ==> Load Balancer 
+	
+		- sign-up 			- Micro-Service1
+		- sign-in 
+		- search 
+		- add_to_cart 
+		- payment
+		- order
+	
+	
+	Routing Rulesets::::
+	
+	Listener Rules 
+	
+	Timeout conditions
+	
+	health check status 
+	
+	
+	www.google.com 
+	
+	service catalog : gmail,maps,drive,translate
+	
+	
+	https://gmail.google.com
+	
+	
+	inbox
+	sent
+	trash
+	spam
+	
+	
+	
+	https://maps.google.com
+	
+	https://translate.google.com
+	
+	
+	1. Host Based Routing ===> https://gmail.google.com --> 
+	
+	2. Path Based Routing ===> https://gmail.google.com/inbox
+	
+	3. Query Based Routing ===> https://gmail.google.com/inbox?name=sam
+	
+	4. Simple Routing 			==> Static Web Sites/Pages
+	
+
+	
+	python script : call the amazon.com url 10000000 api 
+	
+	
+	
+		
+	
+	
 			
