@@ -1655,9 +1655,10 @@ ________________________________________
 1.	Open ALB DNS
 2.	Insert record
 3.	Check:
+o	S# Bucket for file added
 o	RDS updated
-o	SQS message
-o	Lambda logs
+o	SQS message and trigger lambda
+o	Lambda triggers email 
 o	Email from SNS
 ________________________________________
 
