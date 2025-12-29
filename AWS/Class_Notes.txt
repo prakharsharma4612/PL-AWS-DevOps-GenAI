@@ -1434,3 +1434,230 @@ chown -R ec2-user:ec2-user /home/ec2-user/*
 cd /home/ec2-user
 sudo nohup python3 app.py > app.log 2>&1 &
 		
+
+
+
+
+### Delete in this order (IMPORTANT)
+
+1.	Auto Scaling Group
+2.	Load Balancer
+3.	Target Group
+4.	EC2 instances
+5.	RDS
+6.	Lambda
+7.	SQS
+8.	SNS
+9.	NAT Gateway (if any)
+10.	Subnets
+11.	Route Tables
+12.	Internet Gateway
+13.	VPC
+
+
+
+
+
+
+________________________________________
+🧠 WHAT YOU WILL BUILD (READ ONCE)
+VPC
+├── Public Subnet AZ1 → ALB
+├── Public Subnet AZ2 → ALB
+├── Private Subnet AZ1 → EC2 (ASG)
+├── Private Subnet AZ2 → EC2 (ASG)
+├── RDS (Private, Single AZ)
+├── SQS → Lambda → SNS
+└── CloudWatch monitoring
+________________________________________
+🟢 STEP 0: REGION SELECTION
+Choose ONE region and stay there
+Example:
+ap-south-1 (Mumbai)
+Why?
+•	Lower latency (India)
+•	Free-tier friendly
+________________________________________
+🟢 STEP 1: CREATE VPC (FOUNDATION)
+Console → VPC → Create VPC
+Parameter	Value	Why
+Name	vpc-3tier-lab	Easy identification
+IPv4 CIDR	10.0.0.0/16	Large private range
+IPv6	No	Not needed
+Tenancy	Default	Free tier
+👉 This gives 65,536 IPs
+________________________________________
+🟢 STEP 2: CREATE INTERNET GATEWAY
+VPC → Internet Gateways → Create
+Parameter	Value
+Name	igw-3tier
+Attach IGW to VPC
+Actions → Attach → vpc-3tier-lab
+Why?
+•	Required for public internet access
+________________________________________
+🟢 STEP 3: CREATE SUBNETS (MOST IMPORTANT STEP)
+We will create 4 subnets.
+________________________________________
+3.1 Public Subnet – AZ1
+Parameter	Value
+Name	public-subnet-az1
+VPC	vpc-3tier-lab
+AZ	ap-south-1a
+CIDR	10.0.1.0/24
+Why /24?
+•	256 IPs
+•	Enough for ALB + future growth
+________________________________________
+3.2 Public Subnet – AZ2
+Parameter	Value
+Name	public-subnet-az2
+AZ	ap-south-1b
+CIDR	10.0.2.0/24
+👉 ALB requires minimum 2 AZs
+________________________________________
+3.3 Private Subnet – AZ1
+Parameter	Value
+Name	private-subnet-az1
+AZ	ap-south-1a
+CIDR	10.0.3.0/24
+________________________________________
+3.4 Private Subnet – AZ2
+Parameter	Value
+Name	private-subnet-az2
+AZ	ap-south-1b
+CIDR	10.0.4.0/24
+👉 EC2 ASG will span these two
+________________________________________
+🟢 STEP 4: ROUTE TABLES (VERY CRITICAL)
+________________________________________
+4.1 Public Route Table
+Create Route Table
+Name: public-rt
+VPC: vpc-3tier-lab
+Add Route
+Destination: 0.0.0.0/0
+Target: Internet Gateway
+Associate Subnets
+✔ public-subnet-az1
+✔ public-subnet-az2
+Why?
+•	Internet access for ALB
+________________________________________
+4.2 Private Route Table
+Create Route Table
+Name: private-rt
+VPC: vpc-3tier-lab
+No internet route (for now)
+Associate Subnets
+✔ private-subnet-az1
+✔ private-subnet-az2
+Why?
+•	EC2 protected from internet
+________________________________________
+🟢 STEP 5: SECURITY GROUPS (ZERO TRUST MODEL)
+________________________________________
+5.1 ALB Security Group
+Rule	Value
+Name	alb-sg
+Inbound	HTTP 80 → 0.0.0.0/0
+Outbound	All
+________________________________________
+5.2 EC2 Security Group
+Rule	Value
+Name	ec2-sg
+Inbound	HTTP 80 → alb-sg
+Inbound	SSH 22 → Your IP
+Outbound	All
+________________________________________
+5.3 RDS Security Group
+Rule	Value
+Name	rds-sg
+Inbound	MySQL 3306 → ec2-sg
+Outbound	All
+________________________________________
+🟢 STEP 6: CREATE RDS (DATABASE TIER)
+Create DB Subnet Group
+Parameter	Value
+Name	rds-subnet-group
+Subnets	private-subnet-az1 + az2
+________________________________________
+Create RDS Instance
+Parameter	Value
+Engine	MySQL
+Template	Free Tier
+AZ	Single AZ
+Instance	db.t3.micro
+Storage	20 GB
+Public	No
+VPC	vpc-3tier-lab
+SG	rds-sg
+👉 Save:
+•	Endpoint
+•	Username
+•	Password
+________________________________________
+🟢 STEP 7: CREATE SQS
+Name: crud-events-queue
+Type: Standard
+Why?
+•	Async processing
+•	Decoupling
+________________________________________
+🟢 STEP 8: CREATE SNS
+Name: crud-events-topic
+Subscription: Email
+✔ Confirm email
+________________________________________
+🟢 STEP 9: CREATE LAMBDA
+Parameter	Value
+Runtime	Python 3.9
+Role	Lambda role
+Trigger	SQS
+Lambda:
+•	Reads message
+•	Sends SNS email
+________________________________________
+🟢 STEP 10: CREATE TARGET GROUP
+Parameter	Value
+Type	Instance
+Protocol	HTTP
+Port	80
+VPC	vpc-3tier-lab
+Health	/
+________________________________________
+🟢 STEP 11: CREATE ALB (MULTI-AZ)
+Parameter	Value
+Type	Application LB
+Scheme	Internet-facing
+Subnets	Both public
+SG	alb-sg
+Listener	HTTP → target group
+________________________________________
+🟢 STEP 12: LAUNCH TEMPLATE
+Parameter	Value
+AMI	Amazon Linux 2
+Instance	t2.micro
+SG	ec2-sg
+IAM Role	EC2 role
+User Data	Flask script
+________________________________________
+🟢 STEP 13: AUTO SCALING GROUP
+Parameter	Value
+Subnets	both private
+Desired	1
+Min	1
+Max	3
+Health	ELB
+Attach	Target Group
+________________________________________
+🟢 STEP 14: FINAL TEST
+1.	Open ALB DNS
+2.	Insert record
+3.	Check:
+o	RDS updated
+o	SQS message
+o	Lambda logs
+o	Email from SNS
+________________________________________
+
