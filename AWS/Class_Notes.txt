@@ -998,8 +998,689 @@ Day 12: 18th Dec. 2025
 	-> Projects -> 
 	
 
-Next ::: Azure Cloud - AZ104
 
-Next ::: DevOps using Open-Source Tools 
+#######################
+Day 13: 23rd Dec. 2025
+#######################	
 
+3-Tier Application :		--> E_Commerce Portal 
+
+	--> Front-End 
+	--> Application 				==> Add_to_cart --> queue -- SQS .
+											--> Func. -- Executed using Lambda Service
+											
+											--> 1--->100 ==> send email notification to the user
+												--> SNS -
+													
+	--> Data Base Layer 
+	
+	
+	- Data Base Service :::
+		- AWS Aurora & RDS -- SQL 
+	
+	- SQS, SNS 
+	
+	- AWS Cloud ::: 
+	
+		- Monitoring Service - AWS DevOps Guru --- Based on AI-ML Model 
+	
+
+- Project Problem Statement ::::
+
+
+	
+Project : Set-up Highly Available and Secured AWS Infra-Structure to Deploy 3-Tier Architecture
+
+
+Phase 1: Design the Architecture based on the AWS Services 
+
+List Services :::
+	
+Service				Role in Architecture
 			
+IAM					Secure access & roles
+VPC					Network isolation
+Public Subnet		Internet-facing tier
+Private Subnet		Secure backend tier
+EC2					Application server
+RDS					Persistent relational DB
+SNS					Email notifications
+SQS					Async message queue
+Lambda				Background processing
+S3					Object storage
+CloudWatch			Monitoring
+
+ALB	& ASG			Load Balancing(Multi-Az) & High Availability
+
+
+Application Architecture :
+
+Infra Architecture :
+	- PAAS / IAAS / SAAS
+
+
+#######################
+Day 14: 26th Dec. 2025
+#######################	
+
+	Phase 1 : Create AWS Infra-Structure with RDS
+	
+	Pre-Requisites ::::
+	
+		1. Detailed Architecture Diagram :::
+		
+			=> Create the Workflow :
+				- Dependencies and the implementation process.
+			
+		2. Resource Provisioning :::
+		
+			=> Identify the upstream & downstream dependencies 
+			
+			=> Sequence of resource provisioning & Configuration
+			
+
+Service			
+			
+IAM	::
+		- Create IAM User ==> attach AdministrationAccess Policy
+		- IAM Roles :
+			-> EC2 =>  RDS 
+			-> Lambda =>
+		- VPC 		=> Mumbai 		==> IGW 
+			- cidr 
+			
+		- Subnets - cidr  				
+			Web Servers:				
+				- Public Subnet1	
+				- Public Subnet2
+			Database Servers:
+				- Private Subnet1	
+				- Private Subnet2	
+
+		- Create Internet Gateway ==> Internet facing ==> with valid Tag to reg in ALB
+		
+		- Configure Route Table 
+				-> 1. Public Internet facing 	==> Main Route Table -> IGW - 
+				-> 2. Local 
+		- Route Table Association 
+				-> Public Subnets - Association -> Main Route Table(IGW,VPC-CIDR) 
+				-> Private Subnets - Association -> Local/Private Route Table(VPC-CIDR) 
+				
+				
+		- Security Group :::
+		
+			1. EC2 Instance ==> 5000,http,22,https 	==> Public Subnet 		# Without Load balancer
+							==> Loadbalancer_Security_Grp_Name				# With Load balancer
+			
+			2. RDS Instance ==> MYSQL - 3306 port ==> VPC Level cidr 
+			
+			3. Load Balancers => http,22,https,IGW		==> Loadbalancer public DNS 
+								 ==> EC2 Instance
+								 
+		
+	
+	Services to be created ::: Checklist :::
+	
+		1. IAM Users, Policies, Roles(EC2, Lambda)
+					PLAWS2612-EC2_Role1 ==> To be referred in EC2 Instance 
+					PLAWS2612-Lambda_Role1 ==> Tobe referred in Lambda
+		
+		2. VPC-cidr(Enterprise_Level)
+		   Subnet-cidr(vpc) ==> (2 Public, 2 Private)
+		   IGW,Route_Tables
+		   Route_Table Associations
+		   Security Groups
+		   
+			1 VPC 		
+				PLAWS2612-VPC			vpc-06a9e026753e5b218 / PLAWS2612-VPC
+				
+				Internet-Gateway		PLAWS2612-IGW
+				
+				Main_Route Table : rtb-04f4665feb7ce7415
+				
+				2 Public_Subnets 		
+						- PLAWS2612-VPC-Public-SN1
+						- PLAWS2612-VPC-Public-SN2
+				
+				2 Private_Subnets
+						- PLAWS2612-VPC-Private-SN1
+						- PLAWS2612-VPC-Private-SN2
+				
+				
+				Route TAble ::
+				
+					- PLAWS2612-VPC-Private-RT1
+	
+Next :::
+
+	
+		3. EC2 Resources 
+			- Web Server ==> Templates!		
+		
+		4. Target Groups 
+			- List of Web Server Instances 
+			
+		5. RDS 
+			- Create RDS Instance using private subnet 
+			- Free Tier 
+			
+		6. SQS,S3 
+		
+		7. Lambda 
+		
+		8. SNS 
+		
+		9. Cloud Watch 
+		
+		10. ALB			
+
+
+		
+
+#######################
+Day 15: 29th Dec. 2025
+#######################	
+
+	- Phase 1: 
+		- VPC,Subnet,IAM Roles,Security Groups,RDS,SQS,SNS,Lambda  	
+		
+		
+	- Phase 2:
+		- Create ALB,Target Group, ASG 
+		
+Scripting Languages: 
+	Python, shell scripts - AWS/Azure/GCP 
+
+	yaml,groovy,python,shell scripts - DevOps 
+
+		
+Create Custom AMIs, Launch Templates based on the business requirement (Application Level)
+			
+
+RDS Endpoint: project1-database.c5gsg4a82ts5.ap-south-1.rds.amazonaws.com
+
+Login to EC2 Instance and access RDS :::
+
+project1-database.c5gsg4a82ts5.ap-south-1.rds.amazonaws.com
+
+mysql -h project1-database.c5gsg4a82ts5.ap-south-1.rds.amazonaws.com -u admin -p
+
+
+AWS Instance Launch Template :::
+
+Deploy Application to EC2 - Application Web Server:
+	
+	Deploy Python program - crud program using:
+
+	- User Data 
+	
+	- CICD Pipelines / Docker / Kubernetes.........
+
+Delete the resources if it is not in use!
+
+
+
+#### Lambda Code :::
+
+import json
+import boto3
+
+sns = boto3.client('sns')
+
+SNS_TOPIC_ARN = "arn:aws:sns:ap-south-1:-sns-topic"
+
+def lambda_handler(event, context):
+    print("Received event:", event)
+
+    for record in event['Records']:
+        message = record['body']   # 👈 PLAIN TEXT
+
+        print("Processing message:", message)
+
+        response = sns.publish(
+            TopicArn=SNS_TOPIC_ARN,
+            Subject="LoksaiETA App Notification",
+            Message=f"Event received from application:\n\n{message}"
+        )
+
+        print("SNS Publish Response:", response)
+
+    return {
+        "statusCode": 200,
+        "body": "Messages processed successfully"
+    }
+	
+
+
+#### User Data Script for Launch Template :::
+
+#!/bin/bash
+dnf update -y
+
+# Install system packages
+dnf install -y python3 pip mariadb105 unzip
+
+# Install Python libraries
+pip3 install flask pymysql boto3 werkzeug
+
+cat <<EOF > /home/ec2-user/app.py
+from flask import Flask, request, redirect, render_template_string
+import pymysql
+import boto3
+import os
+from werkzeug.utils import secure_filename
+
+app = Flask(__name__)
+
+# ---------------- CONFIG ----------------
+DB_HOST = "project1-database.<rds_id>.ap-south-1.rds.amazonaws.com"
+DB_USER = "admin"
+DB_PASS = "valid_psswd"
+DB_NAME = "project1db"
+
+S3_BUCKET = "lject1"
+SQS_URL = "https://sqs.ap-south-1.amazonaws.comURL"
+REGION = "ap-south-1"
+
+UPLOAD_FOLDER = "/tmp"
+# ---------------------------------------
+
+s3 = boto3.client("s3", region_name=REGION)
+sqs = boto3.client("sqs", region_name=REGION)
+
+def get_db():
+    return pymysql.connect(
+        host=DB_HOST,
+        user=DB_USER,
+        password=DB_PASS,
+        database=DB_NAME
+    )
+
+# ---------------- HOME PAGE ----------------
+HOME_HTML = """
+<h2>Project 1 - 3 Tier Application</h2>
+
+<h3>Add User</h3>
+<form method="POST" action="/add" enctype="multipart/form-data">
+Name: <input name="name" required>
+Email: <input name="email" required>
+File: <input type="file" name="file">
+<button>Add</button>
+</form>
+
+<h3>User List</h3>
+<table border=1>
+<tr>
+<th>ID</th><th>Name</th><th>Email</th><th>File</th><th>Action</th>
+</tr>
+{% for u in appusers %}
+<tr>
+<td>{{u[0]}}</td>
+<td>{{u[1]}}</td>
+<td>{{u[2]}}</td>
+<td>{{u[3]}}</td>
+<td>
+<a href="/edit/{{u[0]}}">Edit</a> |
+<a href="/delete/{{u[0]}}">Delete</a>
+</td>
+</tr>
+{% endfor %}
+</table>
+"""
+
+# ---------------- EDIT PAGE ----------------
+EDIT_HTML = """
+<h2>Edit User</h2>
+
+<form method="POST" action="/update/{{user[0]}}">
+Name: <input name="name" value="{{user[1]}}" required>
+Email: <input name="email" value="{{user[2]}}" required>
+<button>Update</button>
+</form>
+
+<br>
+<a href="/">Back</a>
+"""
+
+@app.route("/")
+def index():
+    db = get_db()
+    cur = db.cursor()
+    cur.execute("SELECT * FROM appusers")
+    appusers = cur.fetchall()
+    db.close()
+    return render_template_string(HOME_HTML, appusers=appusers)
+
+# ---------------- ADD ----------------
+@app.route("/add", methods=["POST"])
+def add():
+    name = request.form["name"]
+    email = request.form["email"]
+    file = request.files.get("file")
+    filename = ""
+
+    if file and file.filename:
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(filepath)
+        s3.upload_file(filepath, S3_BUCKET, filename)
+
+    db = get_db()
+    cur = db.cursor()
+    cur.execute(
+        "INSERT INTO appusers (name, email, filename) VALUES (%s, %s, %s)",
+        (name, email, filename)
+    )
+    db.commit()
+    db.close()
+
+    # Send notification
+    sqs.send_message(
+        QueueUrl=SQS_URL,
+        MessageBody=f"New user added: {name}, {email}"
+    )
+
+    return redirect("/")
+
+# ---------------- EDIT ----------------
+@app.route("/edit/<int:id>")
+def edit(id):
+    db = get_db()
+    cur = db.cursor()
+    cur.execute("SELECT * FROM appusers WHERE id=%s", (id,))
+    user = cur.fetchone()
+    db.close()
+    return render_template_string(EDIT_HTML, user=user)
+
+# ---------------- UPDATE ----------------
+@app.route("/update/<int:id>", methods=["POST"])
+def update(id):
+    name = request.form["name"]
+    email = request.form["email"]
+
+    db = get_db()
+    cur = db.cursor()
+    cur.execute(
+        "UPDATE appusers SET name=%s, email=%s WHERE id=%s",
+        (name, email, id)
+    )
+    db.commit()
+    db.close()
+
+    return redirect("/")
+
+# ---------------- DELETE ----------------
+@app.route("/delete/<int:id>")
+def delete(id):
+    db = get_db()
+    cur = db.cursor()
+    cur.execute("DELETE FROM appusers WHERE id=%s", (id,))
+    db.commit()
+    db.close()
+    return redirect("/")
+
+# ---------------- TG Health ----------------
+@app.route("/")
+def health():
+    return "OK", 200
+	
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=80)
+EOF
+
+chown -R ec2-user:ec2-user /home/ec2-user/*
+
+cd /home/ec2-user
+sudo nohup python3 app.py > app.log 2>&1 &
+		
+
+
+
+
+### Delete in this order (IMPORTANT)
+
+1.	Auto Scaling Group
+2.	Load Balancer
+3.	Target Group
+4.	EC2 instances
+5.	RDS
+6.	Lambda
+7.	SQS
+8.	SNS
+9.	NAT Gateway (if any)
+10.	Subnets
+11.	Route Tables
+12.	Internet Gateway
+13.	VPC
+
+
+
+
+
+
+________________________________________
+🧠 WHAT YOU WILL BUILD (READ ONCE)
+VPC
+├── Public Subnet AZ1 → ALB
+├── Public Subnet AZ2 → ALB
+├── Private Subnet AZ1 → EC2 (ASG)
+├── Private Subnet AZ2 → EC2 (ASG)
+├── RDS (Private, Single AZ)
+├── SQS → Lambda → SNS
+└── CloudWatch monitoring
+________________________________________
+🟢 STEP 0: REGION SELECTION
+Choose ONE region and stay there
+Example:
+ap-south-1 (Mumbai)
+Why?
+•	Lower latency (India)
+•	Free-tier friendly
+________________________________________
+🟢 STEP 1: CREATE VPC (FOUNDATION)
+Console → VPC → Create VPC
+Parameter	Value	Why
+Name	vpc-3tier-lab	Easy identification
+IPv4 CIDR	10.0.0.0/16	Large private range
+IPv6	No	Not needed
+Tenancy	Default	Free tier
+👉 This gives 65,536 IPs
+________________________________________
+🟢 STEP 2: CREATE INTERNET GATEWAY
+VPC → Internet Gateways → Create
+Parameter	Value
+Name	igw-3tier
+Attach IGW to VPC
+Actions → Attach → vpc-3tier-lab
+Why?
+•	Required for public internet access
+________________________________________
+🟢 STEP 3: CREATE SUBNETS (MOST IMPORTANT STEP)
+We will create 4 subnets.
+________________________________________
+3.1 Public Subnet – AZ1
+Parameter	Value
+Name	public-subnet-az1
+VPC	vpc-3tier-lab
+AZ	ap-south-1a
+CIDR	10.0.1.0/24
+Why /24?
+•	256 IPs
+•	Enough for ALB + future growth
+________________________________________
+3.2 Public Subnet – AZ2
+Parameter	Value
+Name	public-subnet-az2
+AZ	ap-south-1b
+CIDR	10.0.2.0/24
+👉 ALB requires minimum 2 AZs
+________________________________________
+3.3 Private Subnet – AZ1
+Parameter	Value
+Name	private-subnet-az1
+AZ	ap-south-1a
+CIDR	10.0.3.0/24
+________________________________________
+3.4 Private Subnet – AZ2
+Parameter	Value
+Name	private-subnet-az2
+AZ	ap-south-1b
+CIDR	10.0.4.0/24
+👉 EC2 ASG will span these two
+________________________________________
+🟢 STEP 4: ROUTE TABLES (VERY CRITICAL)
+________________________________________
+4.1 Public Route Table
+Create Route Table
+Name: public-rt
+VPC: vpc-3tier-lab
+Add Route
+Destination: 0.0.0.0/0
+Target: Internet Gateway
+Associate Subnets
+✔ public-subnet-az1
+✔ public-subnet-az2
+Why?
+•	Internet access for ALB
+________________________________________
+4.2 Private Route Table
+Create Route Table
+Name: private-rt
+VPC: vpc-3tier-lab
+No internet route (for now)
+Associate Subnets
+✔ private-subnet-az1
+✔ private-subnet-az2
+Why?
+•	EC2 protected from internet
+________________________________________
+🟢 STEP 5: SECURITY GROUPS (ZERO TRUST MODEL)
+________________________________________
+5.1 ALB Security Group
+Rule	Value
+Name	alb-sg
+Inbound	HTTP 80 → 0.0.0.0/0
+Outbound	All
+________________________________________
+5.2 EC2 Security Group
+Rule	Value
+Name	ec2-sg
+Inbound	HTTP 80 → alb-sg
+Inbound	SSH 22 → Your IP
+Outbound	All
+________________________________________
+5.3 RDS Security Group
+Rule	Value
+Name	rds-sg
+Inbound	MySQL 3306 → ec2-sg
+Outbound	All
+________________________________________
+🟢 STEP 6: CREATE RDS (DATABASE TIER)
+Create DB Subnet Group
+Parameter	Value
+Name	rds-subnet-group
+Subnets	private-subnet-az1 + az2
+________________________________________
+Create RDS Instance
+Parameter	Value
+Engine	MySQL
+Template	Free Tier
+AZ	Single AZ
+Instance	db.t3.micro
+Storage	20 GB
+Public	No
+VPC	vpc-3tier-lab
+SG	rds-sg
+👉 Save:
+•	Endpoint
+•	Username
+•	Password
+
+
+###Create an EC2 Instance using public subnet and Login to MySQL from EC2
+
+mysql -h <RDS-ENDPOINT> -u admin -p
+
+Create database and table
+CREATE DATABASE project1db;
+USE project1db;
+
+CREATE TABLE appusers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    filename VARCHAR(100)
+);
+
+SELECT * from appusers;
+
+Exit MySQL:
+exit
+
+_______________________________________
+🟢 STEP 7: CREATE SQS
+Name: crud-events-queue
+Type: Standard
+Why?
+•	Async processing
+•	Decoupling
+________________________________________
+🟢 STEP 8: CREATE SNS
+Name: crud-events-topic
+Subscription: Email
+✔ Confirm email
+________________________________________
+🟢 STEP 9: CREATE LAMBDA
+Parameter	Value
+Runtime	Python 3.9
+Role	Lambda role
+Trigger	SQS
+Lambda:
+•	Reads message
+•	Sends SNS email
+________________________________________
+🟢 STEP 10: CREATE TARGET GROUP
+Parameter	Value
+Type	Instance
+Protocol	HTTP
+Port	80
+VPC	vpc-3tier-lab
+Health	/
+________________________________________
+🟢 STEP 11: CREATE ALB (MULTI-AZ)
+Parameter	Value
+Type	Application LB
+Scheme	Internet-facing
+Subnets	Both public
+SG	alb-sg
+Listener	HTTP → target group
+________________________________________
+🟢 STEP 12: LAUNCH TEMPLATE
+Parameter	Value
+AMI	Amazon Linux 2
+Instance	t2.micro
+SG	ec2-sg
+IAM Role	EC2 role
+User Data	Flask script
+________________________________________
+🟢 STEP 13: AUTO SCALING GROUP
+Parameter	Value
+Subnets	both private
+Desired	1
+Min	1
+Max	3
+Health	ELB
+Attach	Target Group
+________________________________________
+🟢 STEP 14: FINAL TEST
+1.	Open ALB DNS
+2.	Insert record
+3.	Check:
+o	S# Bucket for file added
+o	RDS updated
+o	SQS message and trigger lambda
+o	Lambda triggers email 
+o	Email from SNS
+________________________________________
+
